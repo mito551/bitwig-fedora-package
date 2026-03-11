@@ -4,10 +4,14 @@ Converts a `.deb` package to `.rpm`, strips the `/usr/bin` directory ownership e
 
 Built and tested for installing [Bitwig Studio](https://www.bitwig.com) on RPM-based distros (Fedora, openSUSE, etc.), since Bitwig only ships `.deb` packages.
 
+The script is generate using Claude Sonnet 4.6. If you have a problem with using vibe-coded scripts, you can just follow the steps described below.
+
+I've looked at the code and while it is definitely overengineered for what it's supposed to do, it worked and I don't have to worry about doing this manually every Bitwig update anymore
+
 ## Dependencies
 
 ```
-sudo apt install alien rpm rpm-build rpmrebuild
+sudo dnf install alien rpm rpm-build rpmrebuild
 ```
 
 ## Usage
