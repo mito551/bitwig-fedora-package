@@ -64,8 +64,15 @@ ok "alien produced: $GENERATED_RPM"
 # ── 4. rpmrebuild + spec patch ───────────────
 info "Rebuilding RPM with rpmrebuild (editing spec)..."
 
-# rpmrebuild -d sets the output directory; -e opens editor; -p uses a script instead.
-# We patch the spec in-place by setting EDITOR to a sed one-liner.
+# rpmrebuild.sh doesn't quote $RPMREBUILD_PAQUET, causing an ambiguous redirect
+# when the path contains spaces. Patch it in-place if not already fixed.
+RPMREBUILD_SH="/usr/lib/rpmrebuild/rpmrebuild.sh"
+if grep -qP '(?<!")\$\{RPMREBUILD_PAQUET\}(?!")' "$RPMREBUILD_SH" 2>/dev/null; then
+    info "Patching $RPMREBUILD_SH to quote \$RPMREBUILD_PAQUET..."
+    sudo sed -i 's/\${RPMREBUILD_PAQUET}/"${RPMREBUILD_PAQUET}"/g' "$RPMREBUILD_SH"
+    ok "Patched."
+fi
+
 PATCH_SCRIPT="$(mktemp /tmp/patch_spec.XXXXXX.sh)"
 cat > "$PATCH_SCRIPT" <<'PATCH'
 #!/usr/bin/env bash
